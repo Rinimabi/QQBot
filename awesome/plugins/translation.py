@@ -19,9 +19,9 @@ async def weather(session: CommandSession):
     # 从会话状态（session.state）中获取城市名称（city），如果当前不存在，则询问用户
     content = session.get('content', prompt='说，你想翻译什么内容？')
     # 获取城市的天气预报
-    weather_report = await get_weather_of_city(content)
+    result = await get_translation_of_content(content)
     # 向用户发送天气预报
-    await session.send(weather_report)
+    await session.send(result)
 
 
 # weather.args_parser 装饰器将函数声明为 weather 命令的参数解析器
@@ -48,7 +48,7 @@ async def _(session: CommandSession):
     session.state[session.current_key] = stripped_arg
 
 
-async def get_weather_of_city(content: str) -> str:
+async def get_translation_of_content(content: str) -> str:
     # 这里简单返回一个字符串
     # 实际应用中，这里应该调用返回真实数据的天气 API，并拼接成天气预报内容
     result = translateBaidu(content)
