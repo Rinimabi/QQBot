@@ -1,5 +1,5 @@
 from nonebot import on_command, CommandSession
-
+import requests
 
 # on_command 装饰器将函数声明为一个命令处理器
 # 这里 weather 为命令的名字，同时允许使用别名「天气」「天气预报」「查天气」
@@ -38,6 +38,19 @@ async def _(session: CommandSession):
 
 
 async def get_weather_of_city(city: str) -> str:
-    # 这里简单返回一个字符串
-    # 实际应用中，这里应该调用返回真实数据的天气 API，并拼接成天气预报内容
-    return f'{city}的天气是……'
+    try:
+        paramas = {
+            'city': city,
+        }
+        # 这里简单返回一个字符串
+        response = requests.get(
+            'http://wthrcdn.etouch.cn/weather_mini', paramas)
+        jsonResponse = response.json()  # 获得返回的结果，结果为json格式
+        result = "" + str(jsonResponse["data"]["forecast"][0]["date"])+"\n"\
+            + str(jsonResponse["data"]["forecast"][0]["high"])+"\n"\
+            + str(jsonResponse["data"]["forecast"][0]["low"])+"\n"\
+            + str(jsonResponse["data"]["forecast"][0]["fengxiang"])+"\n"\
+            + str(jsonResponse["data"]["forecast"][0]["type"])
+        return result
+    except Exception as e:
+        print(e)
